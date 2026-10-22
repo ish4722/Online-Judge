@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --bg-color: #0d1f1a;
+      --text-color: #e0ffe0;
+      --card-bg: #10251f;
+      --card-border: #1c3f34;
+      --btn-bg: #34d399;
+      --btn-hover: #26b284;
+      --input-bg: #f4f4f4;
+      --input-text: #0d1f1a;
+      --placeholder: #6b9080;
+      --label-color: #bbf7d0;
+      --link-color: #34d399;
+      --link-hover: #a7f3d0;
+      --alert-bg: #def7ec;
+      --alert-text: #065f46;
+    }
+
+    [data-theme="light"] {
+      --bg-color: #f4f4f4;
+      --text-color: #0d1f1a;
+      --card-bg: #ffffff;
+      --card-border: #ccc;
+      --btn-bg: #10b981;
+      --btn-hover: #0f766e;
+      --input-bg: #ffffff;
+      --input-text: #0d1f1a;
+      --placeholder: #6b7280;
+      --label-color: #047857;
+      --link-color: #047857;
+      --link-hover: #065f46;
+      --alert-bg: #d1fae5;
+      --alert-text: #064e3b;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #000000;
+      color: #00ffaa;
+      position: relative;
+      overflow: hidden;
+      flex-direction: column;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 8vh;
+      width: 100%;
+    }
+
+    canvas.matrix {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .card {
+      background-color: var(--card-bg) !important;
+      color: var(--text-color);
+      box-shadow: 0 0 20px rgba(0, 255, 153, 0.2);
+      border-radius: 10px;
+      max-width: 500px;
+      width: 100%;
+    }
+
+    h1 span {
+      color: var(--btn-bg);
+      text-shadow: 0 0 2px rgba(0, 128, 64, 0.2);
+    }
+
+    a {
+      color: var(--link-color);
+      transition: color 0.2s;
+    }
+
+    a:hover {
+      color: var(--link-hover);
+    }
+
+    .btn-primary {
+      background-color: var(--btn-bg);
+      border: none;
+      font-weight: bold;
+      color: var(--input-text);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--btn-hover);
+    }
+
+    input.form-control {
+      background-color: var(--input-bg);
+      color: var(--input-text);
+      border: 1px solid var(--btn-bg);
+    }
+
+    input.form-control::placeholder {
+      color: var(--placeholder);
+    }
+
+    label {
+      font-weight: 600;
+      color: var(--label-color);
+    }
+
+    .alert {
+      background-color: var(--alert-bg);
+      color: var(--alert-text);
+      border: 1px solid var(--btn-bg);
+    }
+  </style>
+</head>
+<body>
+  <!-- Matrix animation -->
+  <canvas class="matrix"></canvas>
+
+  <!-- Centered registration form -->
+  <div class="container">
+    <form class="card p-4 shadow-lg" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <h1 class="text-center"><span>Online Judge</span></h1>
+      <h3>Register</h3>
+      <hr />
+
+      {% if messages %}
+      <div class="alert alert-primary" role="alert">
+        {% for message in messages %} {{ message }} {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" class="form-control" name="username" id="username" placeholder="Enter username" required />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Id</label>
+        <input type="email" class="form-control" name="email" id="email" placeholder="abc@gmail.com" required />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" name="password" id="password" placeholder="Password" required />
+      </div>
+
+      <p>Already have an account? <a href="/auth/login/">Login</a></p>
+      <button type="submit" class="btn btn-primary w-100">Submit</button>
+    </form>
+  </div>
+
+  <!-- Matrix animation script -->
+  <!-- Matrix Animation Script -->
+  <script>
+    const canvas = document.querySelector(".matrix");
+    const ctx = canvas.getContext("2d");
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+
+    const binary = "10";
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+    const drops = Array.from({ length: columns }).fill(1);
+
+    function getTheme() {
+      return document.documentElement.getAttribute("data-theme") || "dark";
+    }
+
+    function draw() {
+      // const theme = getTheme();
+      const bgColor = "rgba(255,255,255,0.06)";
+      const matrixColor = "#047857";
+
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = matrixColor;
+      ctx.font = fontSize + "px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = binary[Math.floor(Math.random() * binary.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    }
+
+    setInterval(draw, 50);
+
+    window.addEventListener("resize", () => {
+      canvas.height = window.innerHeight;
+      canvas.width = window.innerWidth;
+    });
+  </script>
+</body>
+</html>
